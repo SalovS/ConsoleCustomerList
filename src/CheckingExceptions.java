@@ -20,6 +20,7 @@ public class CheckingExceptions {
                 tokens[0] = command;
             }
         }
+        tokens[1] += " " + tokens[2] + " " + tokens[3];
         return tokens;
     }
 
@@ -29,25 +30,19 @@ public class CheckingExceptions {
         if(matcher.find()){
             return matcher.group();
         }
-        try {
-            throw new ConsoleException("Команда указана неверно");
-        } catch (ConsoleException e) {
-            return command;
-        }
+        getException("Команда указана неверно");
+        return command;
     }
 
     private String getName(String text){
         String name = text.replace(getCommand(text),"").trim();
-        Pattern pattern = Pattern.compile("[[\\w+]\\s+]+");
+        Pattern pattern = Pattern.compile("\\w+\\s+\\w+\\s+");
         Matcher matcher = pattern.matcher(name);
         if(matcher.find()){
             return matcher.group();
         }
-        try{
-            throw new ConsoleException("Не указано имя");
-        }catch(ConsoleException e){
-            return "";
-        }
+        getException("Неверно указано имя");
+        return "";
     }
 
     private String getEmail(String text){
@@ -55,23 +50,25 @@ public class CheckingExceptions {
         Matcher matcher = pattern.matcher(text);
         if(matcher.find()){
             return matcher.group();
-        }try{
-            throw new ConsoleException("Неверно указан электронный адрес");
-        }catch(ConsoleException e){
-            return "";
         }
+        getException("Неверно указан электронный адрес");
+        return "";
     }
 
     private String getPhone(String text){
-        Pattern pattern = Pattern.compile("(\\s*)?(\\+)?([- _():=+]?\\d[- _():=+]?){10,14}(\\s*)?$");
+        Pattern pattern = Pattern.compile("(\\s*)?(\\+)?([- _():=]?\\d[- _():=]?){10,14}(\\s*)?$");
         Matcher matcher = pattern.matcher(text);
         if(matcher.find()){
-            return matcher.group().replaceAll("[- _:=+()]","");
+            return matcher.group().replaceAll("[- _:=()]","");
         }
+        getException("Номер телефона указан неверно");
+        return "";
+    }
+
+    private void getException(String text){
         try {
-            throw new ConsoleException("Номер телефона указан неверно");
+            throw new ConsoleException(text);
         } catch (ConsoleException e) {
-            return "";
         }
     }
 }

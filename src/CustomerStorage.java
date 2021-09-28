@@ -9,9 +9,11 @@ public class CustomerStorage
         storage = new HashMap<>();
     }
 
-    public void addCustomer(String[] data)
+    public void addCustomer(String data)
     {
-        storage.put(data[1], new Customer(data[1], data[3], data[2]));
+        String[] components = data.split("\\s+");
+        String name = components[0] + " " + components[1];
+        storage.put(name, new Customer(name, components[3], components[2]));
     }
 
     public void listCustomers()
@@ -19,9 +21,9 @@ public class CustomerStorage
         storage.values().forEach(System.out::println);
     }
 
-    public void removeCustomer(String[] data)
+    public void removeCustomer(String name)
     {
-        storage.remove(data[1]);
+        storage.remove(name);
     }
 
     public int getCount()
